@@ -1,0 +1,199 @@
+exp 1 :
+
+mkdir Demo
+cd Demo
+echo "<h1>Home Page</h1>" > index.html
+echo "<h1>About Us</h1>" > about.html
+echo "<h1>Contact</h1>" > contact.html
+
+git init
+git add .
+git commit -m "Initial commit: Added 3 HTML files"
+git remote add origin https://github.com/aditya-workhub/EXP1.git
+git branch -M main
+git push -u origin main
+
+# Cloning to verify
+git clone https://github.com/aditya-workhub/EXP1.git
+cd EXP1
+
+---
+exp 2 :
+
+pipeline:
+pipeline {
+    agent any
+    stages {
+        stage('Compile') {
+            steps {
+                writeFile file: 'Addition.java', text: '''
+public class Addition {
+    public static void main(String[] args) {
+        int a = 10, b = 20;
+        int sum = a + b;
+        System.out.println("The sum is: " + sum);
+    }
+}
+'''
+                bat 'javac Addition.java'
+            }
+        }
+        stage('Run') {
+            steps {
+                bat 'java Addition'
+            }
+        }
+    }
+}
+
+---
+exp 3 :
+
+freestyle project:
+git:
+https://github.com/adityasync/exp3_devops
+
+Trigger:
+Build periodically:
+H/2 * * * *
+
+Build Steps:
+Execute Windows batch command:
+Command:
+javac add.java
+java add
+
+---
+exp 4 : 
+
+pipeline:
+node {
+    stage('Clone Repository') {
+    git credentialsId: 'github-pat', url: 'https://github.com/adityasync/exp4_devops', branch: 'master'
+    }
+
+    stage('Deploy to XAMPP') {
+        def xamppPath = 'C:/xampp/htdocs/mywebsite'
+        bat "if not exist \"${xamppPath}\" mkdir \"${xamppPath}\""
+        bat "copy index.html \"${xamppPath}\\\""
+        bat "copy about.html \"${xamppPath}\\\""
+        bat "copy contact.html \"${xamppPath}\\\""
+    }
+
+    stage('Deployment Completed') {
+        echo 'Deployed successfully. Visit http://localhost/mywebsite'
+    }
+}
+
+---
+exp 5 :
+
+pipeline:
+pipeline {
+    agent any
+
+    environment {
+        DEPLOY_DIR = 'C:\\xampp\\htdocs\\mywebsite'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git credentialsId: 'github-creds', branch: 'master', url: 'https://github.com/adityasync/exp5_devops'
+            }
+        }
+
+        stage('Prepare Deployment Directory') {
+            steps {
+                bat """
+                if not exist "%DEPLOY_DIR%" mkdir "%DEPLOY_DIR%"
+                """
+            }
+        }
+
+        stage('Deploy HTML Files to XAMPP') {
+            steps {
+                bat """
+                copy /Y index.html "%DEPLOY_DIR%"
+                copy /Y about.html "%DEPLOY_DIR%"
+                copy /Y contact.html "%DEPLOY_DIR%"
+                """
+            }
+        }
+
+        stage('Deployment Completed') {
+            steps {
+                echo "Visit: http://localhost/mywebsite/index.html"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ CI/CD completed successfully!'
+        }
+        failure {
+            echo '❌ Deployment failed.'
+        }
+    }
+}
+
+---
+exp 6 :
+
+from selenium import webdriver  
+from selenium.webdriver.common.keys import Keys
+import time
+driver=webdriver.Chrome()
+driver.get("https://www.google.com")
+search_box=driver.find_element("name","q")
+search_box.send_keys ("Ramrao Adik institute of technology")
+search_box.send_keys (Keys.RETURN)
+time.sleep(10)
+
+---
+
+exp 7 :
+
+cd .\exp7\
+# Build the image
+docker build -t adityaworkhub/php-app .
+# Login to Docker Hub
+docker login
+# Tag the image for Docker Hub
+docker tag adityaworkhub/php-app adityaworkhub/php-app:latest
+# Push the image to Docker Hub
+docker push adityaworkhub/php-app:latest
+# Expose The Port
+docker run -d -p 8080:80 adityaworkhub/php-app
+Dockerfile
+FROM php:8.1-apache
+COPY index.php /var/www/html/
+EXPOSE 80
+
+index.php
+<?php
+echo "Hello from PHP Docker container!";
+?>
+
+
+---
+exp 8 :
+
+# Pull official Ubuntu image
+docker pull ubuntu
+
+# Run container interactively
+docker run -it ubuntu
+
+# Inside container: Create a file
+echo "This is a test file from updated image." > /testfile.txt
+exit
+
+# Get container ID (or name) and commit the change
+docker ps -a  # Find container ID
+docker commit <container_id> adityaworkhub/ubuntu-custom
+
+# Tag and push to Docker Hub
+docker tag adityaworkhub/ubuntu-custom adityaworkhub/ubuntu-custom:latest
+docker push adityaworkhub/ubuntu-custom:latest
